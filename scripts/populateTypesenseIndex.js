@@ -12,6 +12,7 @@ module.exports = (async () => {
       },
     ],
     apiKey: process.env.TYPESENSE_ADMIN_API_KEY,
+    connectionTimeoutSeconds: 100,
   };
 
   console.log("Config: ", TYPESENSE_CONFIG);
@@ -28,11 +29,6 @@ module.exports = (async () => {
         facet: false,
       },
       {
-        name: "idd",
-        type: "float",
-        facet: false
-      },
-      {
         name: "embedding",
         type: "float[]",
         embed: {
@@ -43,11 +39,9 @@ module.exports = (async () => {
         }
       }
     ],
-    default_sorting_field: "idd",
   };
 
   const images = require("./data/images.json")
-  await typesense.collections('images').delete()
   await typesense.collections().create(schema);
 
   await typesense.collections('images').documents().import(images)
